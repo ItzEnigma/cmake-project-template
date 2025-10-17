@@ -1,0 +1,82 @@
+---
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++17
+
+# Column limit (120 characters as per guidelines)
+ColumnLimit: 120
+
+# Indentation settings (4 spaces as per guidelines)
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+
+# Namespace indentation (no indentation for namespaces)
+NamespaceIndentation: None
+
+# K&R brace style as per guidelines
+BreakBeforeBraces: Allman
+
+# Allow short functions for getters/setters - this is the key change
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AllowShortBlocksOnASingleLine: Always # Allow { return _member; } on one line
+AllowShortFunctionsOnASingleLine: All # Allow complete short functions on one line
+
+# Access modifier indentation
+IndentAccessModifiers: false
+AccessModifierOffset: -4
+
+# Pointer and reference alignment (left as per your style)
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# Include sorting (project includes first, then third-party, then standard)
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  # Project includes
+  - Regex: '^"(inc/|src/|\.\.?/)'
+    Priority: 1
+  # Third-party includes
+  - Regex: "^<[^.]*>"
+    Priority: 3
+  # Standard library includes
+  - Regex: '^<.*\.(h|hpp)>'
+    Priority: 2
+  # Everything else
+  - Regex: ".*"
+    Priority: 4
+
+# Function parameters
+BinPackParameters: false
+BinPackArguments: false
+
+# Constructor initializer lists
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerIndentWidth: 4
+
+# Comments
+AlignTrailingComments: true
+ReflowComments: true
+
+# Indent preprocessor directives
+IndentPPDirectives: BeforeHash
+StatementMacros: ["TV"]
+
+# Spacing
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments: 1
+SpaceAfterCStyleCast: false
+
+# Keep empty lines
+MaxEmptyLinesToKeep: 2
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# Case labels
+IndentCaseLabels: false
+
+# Penalties for line breaking decisions
+PenaltyBreakComment: 300
+PenaltyBreakString: 1000
+PenaltyExcessCharacter: 1000000
