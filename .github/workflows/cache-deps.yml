@@ -1,0 +1,52 @@
+name: Cache Dependencies
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run weekly to refresh cache
+    - cron: "0 0 * * 0"
+
+jobs:
+  cache-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Cache system dependencies
+        id: cache-system-deps
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/bin/gcov
+            /usr/bin/doxygen
+            /usr/bin/graphviz
+          key: system-deps-${{ runner.os }}-v1
+
+      - name: Install system dependencies
+        if: steps.cache-system-deps.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcov doxygen graphviz
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v1.14
+        with:
+          cmake-version: "3.25"
+
+      - name: Cache CMake dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            build/_deps
+            ~/.cmake
+          key: cmake-deps-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', 'cmake/**') }}
+          restore-keys: |
+            cmake-deps-${{ runner.os }}-
+
+      - name: Configure CMake (to fetch dependencies)
+        run: |
+          mkdir -p build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release
