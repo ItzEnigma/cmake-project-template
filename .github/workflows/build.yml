@@ -36,17 +36,30 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends lcov doxygen graphviz
 
-      - name: Cache CMake dependencies and build
+      - name: Cache CMake dependencies
         uses: actions/cache@v3
         with:
           path: |
             build/_deps
-            build/CMakeFiles
             ~/.cmake
-          key: cmake-build-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', 'src/**', 'cmake/**') }}
+          key: cmake-deps-${{ runner.os }}-${{ hashFiles('cmake/dependencies.cmake') }}
+          restore-keys: |
+            cmake-deps-${{ runner.os }}-
+
+      - name: Cache build artifacts
+        uses: actions/cache@v3
+        with:
+          path: |
+            build/CMakeFiles
+            build/lib
+            build/src
+            build/test/CMakeFiles
+            build/cmake_install.cmake
+            build/Makefile
+            build/*.vcxproj*
+          key: cmake-build-${{ runner.os }}-${{ hashFiles('CMakeLists.txt', 'src/**', 'cmake/**', 'test/**') }}
           restore-keys: |
             cmake-build-${{ runner.os }}-
-            cmake-deps-${{ runner.os }}-
 
       - name: Configure CMake
         run: |
